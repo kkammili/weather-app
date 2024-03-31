@@ -10,11 +10,12 @@ import cloudy from "./images/cloudy.jpg";
 import haze from "./images/haze.jpg";
 import def from "./images/def.jpg";
 import "leaflet/dist/leaflet.css";
+import CityTime from "./CityTime";
 
 function App() {
   const [weatherData, setWeatherData] = useState(null);
   const [bgImg, setBgImg] = useState(`url(${def})`);
-  const [coords, setCoords] = useState(null)
+  const [coords, setCoords] = useState(null);
 
   useEffect(() => {
     if (bgImg) {
@@ -53,7 +54,7 @@ function App() {
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
-      setCoords(data.coord)
+      setCoords(data.coord);
       if (!(data.message && data.cod)) {
         setWeatherData(data);
         setBackgroundImage(data.weather[0].description);
@@ -66,18 +67,24 @@ function App() {
     }
   };
 
+  const style = { display: "flex", justifyContent: "center" };
+  const dispComp = weatherData && coords;
+
   return (
     <div>
       <div className={bgImg ? "container-bgimg" : "container"}>
-        <h1 style={{ display: "flex", justifyContent: "center" }}>
-          Weather App
-        </h1>
+        <h1 style={{ ...style }}>Weather App</h1>
         <SearchBar fetchWeatherData={fetchWeatherData} />
-        {weatherData && <WeatherDisplay weatherData={weatherData} />}
+        {dispComp && <WeatherDisplay weatherData={weatherData} />}
       </div>
-      {weatherData && (
-        <div style={{width:"100vw", display:"flex", justifyContent:"center"}}>
-          <Map position={coords}/>
+      {dispComp && (
+        <div style={{ ...style }}>
+          <CityTime coords={coords} cityName={weatherData.name} />
+        </div>
+      )}
+      {dispComp && (
+        <div style={{ width: "100vw", ...style }}>
+          <Map position={coords} />
         </div>
       )}
     </div>

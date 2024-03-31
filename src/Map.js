@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import markerIcon from './images/marker-icon.svg'; // Path to your marker icon image
 import L from 'leaflet'
+import FitBounds from './FitBounds';
 
 const customIcon = L.icon({
   iconUrl:markerIcon,
@@ -10,6 +11,7 @@ const customIcon = L.icon({
   popupAnchor: [1, -34],
   // You can customize icon properties here
 });
+
 
 const Map = ({position}) => {
   // const [position, setPosition] = useState({ lat: 51.505, lng: -0.09 }); // Default position
@@ -25,6 +27,7 @@ const Map = ({position}) => {
           A pretty CSS3 popup. <br /> Easily customizable.
         </Popup>
       </Marker>
+      <FitBounds position={position}/> 
     </MapContainer>
   );
 };
