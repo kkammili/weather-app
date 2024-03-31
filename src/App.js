@@ -2,26 +2,28 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import WeatherDisplay from "./WeatherDisplay";
+import Map from "./Map";
 import SearchBar from "./SearchBar";
 import rainy from "./images/rainy.jpg";
 import sunny from "./images/sunny.jpg";
 import cloudy from "./images/cloudy.jpg";
-import haze from './images/haze.jpg'
+import haze from "./images/haze.jpg";
 import def from "./images/def.jpg";
+import "leaflet/dist/leaflet.css";
 
 function App() {
   const [weatherData, setWeatherData] = useState(null);
   const [bgImg, setBgImg] = useState(`url(${def})`);
+  const [coords, setCoords] = useState(null)
 
   useEffect(() => {
     if (bgImg) {
       // Set background image based on weather data
       const body = document.body;
-      console.log(bgImg);
       body.style.backgroundImage = bgImg;
-      body.style.backgroundSize = "cover"
-      body.style.backgroundPosition = "center"
-      body.style.backgroundAttachment = "fixed"
+      body.style.backgroundSize = "cover";
+      body.style.backgroundPosition = "center";
+      body.style.backgroundAttachment = "fixed";
     }
   }, [bgImg]);
 
@@ -32,12 +34,15 @@ function App() {
       imageUrl = rainy; // Path to rainy background image
     } else if (weatherDescription.includes("cloud")) {
       imageUrl = cloudy; // Path to cloudy background image
-    } else if (weatherDescription.includes("clear") || weatherDescription.includes("sun")) {
+    } else if (
+      weatherDescription.includes("clear") ||
+      weatherDescription.includes("sun")
+    ) {
       imageUrl = sunny; // Path to sunny background image
     } else {
       imageUrl = haze;
     }
-  
+
     setBgImg(`url(${imageUrl})`); // Set as background image URL
   }
 
@@ -48,14 +53,13 @@ function App() {
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
-      console.log(data, '<---- check data')
-      if(!(data.message && data.cod)){
+      setCoords(data.coord)
+      if (!(data.message && data.cod)) {
         setWeatherData(data);
         setBackgroundImage(data.weather[0].description);
-      }else{
-        alert("City Not Found")
+      } else {
+        alert("City Not Found");
       }
-  
     } catch (error) {
       console.error("Error fetching weather data:", error);
       return null;
@@ -63,10 +67,19 @@ function App() {
   };
 
   return (
-    <div className={bgImg ? "container-bgimg" : "container"}>
-      <h1 style={{ display: "flex", justifyContent: "center" }}>Weather App</h1>
-      <SearchBar fetchWeatherData={fetchWeatherData} />
-      {weatherData && <WeatherDisplay weatherData={weatherData} />}
+    <div>
+      <div className={bgImg ? "container-bgimg" : "container"}>
+        <h1 style={{ display: "flex", justifyContent: "center" }}>
+          Weather App
+        </h1>
+        <SearchBar fetchWeatherData={fetchWeatherData} />
+        {weatherData && <WeatherDisplay weatherData={weatherData} />}
+      </div>
+      {weatherData && (
+        <div style={{width:"100vw", display:"flex", justifyContent:"center"}}>
+          <Map position={coords}/>
+        </div>
+      )}
     </div>
   );
 }

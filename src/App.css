@@ -78,3 +78,5 @@ body {
 .submit-button:hover {
   background-color: #45a049;
 }
+
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
