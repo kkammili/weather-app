@@ -10,7 +10,6 @@ const CityTime = ({ cityName, coords }) => {
         // const coordinates = await getCityCoordinates(cityName);
 
         // Step 2: Determine Timezone
-        console.log(coords, cityName, '<------ coords')
         const timezone = await getTimezone(coords);
 
         // Step 3: Get Current Time
@@ -26,7 +25,7 @@ const CityTime = ({ cityName, coords }) => {
   }, [coords, cityName]);
 
   const getTimezone = async ({ lat, "lon":lng }) => {
-    const response = await fetch(`http://api.timezonedb.com/v2.1/get-time-zone?key=8KWOPLRCIDMI&format=json&by=position&lat=${lat}&lng=${lng}`);
+    const response = await fetch(`https://api.timezonedb.com/v2.1/get-time-zone?key=8KWOPLRCIDMI&format=json&by=position&lat=${lat}&lng=${lng}`);
     const data = await response.json();
     return data.zoneName;
   };
